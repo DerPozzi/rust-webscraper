@@ -1,6 +1,6 @@
 use reqwest;
 use select::{self, document::Document, predicate::Class};
-use std::{fs, thread::JoinHandle};
+use std::{error::Error, fs};
 
 #[tokio::main]
 async fn main() {
@@ -28,27 +28,34 @@ async fn main() {
     }
 
     for task in joins {
-        task.await.expect("ERROR");
+        match task.await {
+            _ => {}
+        }
     }
 }
 
-async fn get_date_and_title(url: String) -> Result<(), Box<dyn std::error::Error>> {
-    println!("Hello from Thread");
-
-    let html = reqwest::get(url).await?.text().await?;
+async fn get_date_and_title(url: String) -> Result<()> {
+    let html = reqwest::get(&url)
+        .await
+        .expect(format!("ERROR: GET {}", url).as_str())
+        .text()
+        .await
+        .expect(format!("ERROR: Parse result").as_str());
 
     let document = Document::from(html.as_str());
-    let title = document
-        .find(Class("entry-title"))
-        .nth(0)
-        .expect("No Title given")
-        .text();
-    let date = document
-        .find(Class("meta-date"))
-        .nth(0)
-        .expect("No date given")
-        .text();
 
+    let title = match document.find(Class("entry-title")).nth(0) {
+        Some(str) => str.text(),
+        None => String::new(),
+    };
+
+    let date = match document.find(Class("meta-date")).nth(0) {
+        Some(str) => str.text(),
+        None => return Err(""),
+    };
+
+    println!();
+    println!("{:20}", "-");
     println!("The article \"{}\" was published on [{}]", title, date);
     Ok(())
 }
