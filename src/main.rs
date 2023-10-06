@@ -34,7 +34,7 @@ async fn main() {
     }
 }
 
-async fn get_date_and_title(url: String) -> Result<()> {
+async fn get_date_and_title(url: String) -> Result<(), String> {
     let html = reqwest::get(&url)
         .await
         .expect(format!("ERROR: GET {}", url).as_str())
@@ -46,12 +46,12 @@ async fn get_date_and_title(url: String) -> Result<()> {
 
     let title = match document.find(Class("entry-title")).nth(0) {
         Some(str) => str.text(),
-        None => String::new(),
+        None => return Err(format!("Article not valid \"{}\" - No title", url)),
     };
 
     let date = match document.find(Class("meta-date")).nth(0) {
         Some(str) => str.text(),
-        None => return Err(""),
+        None => return Err(format!("Article not valid \"{}\" - No date", url)),
     };
 
     println!();
