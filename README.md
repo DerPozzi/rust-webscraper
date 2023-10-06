@@ -5,6 +5,8 @@
 The Idea was to let ChatGP generate a codingassignment, for a $3^{rd}$ semester in Computer Science.
 The Assignment is supposed to be in Rust, but the Student has some knowledge of C++ and Python aswell.
 
+Can scrape every Article from "<https://meintechblog.de/>".
+
 ### Rust Coding Assignment: Implementing a Concurrent Web Scraper
 
 **Objective:**
