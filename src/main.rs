@@ -1,6 +1,6 @@
 use reqwest;
 use select::{self, document::Document, predicate::Class};
-use std::{error::Error, fs};
+use std::fs;
 
 #[tokio::main]
 async fn main() {
